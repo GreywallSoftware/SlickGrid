@@ -446,8 +446,8 @@
     function collapseGroup(varArgs) {
       var args = Array.prototype.slice.call(arguments);
       var arg0 = args[0];
-      if (args.length == 1 && arg0.indexOf(groupingDelimiter) != -1) {
-        expandCollapseGroup(arg0.split(groupingDelimiter).length - 1, arg0, true);
+      if (args.length == 1 && arg0.toString().indexOf(groupingDelimiter) != -1) {
+        expandCollapseGroup(arg0.toString().split(groupingDelimiter).length - 1, arg0, true);
       } else {
         expandCollapseGroup(args.length - 1, args.join(groupingDelimiter), true);
       }
