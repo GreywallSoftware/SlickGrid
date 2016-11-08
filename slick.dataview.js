@@ -329,8 +329,12 @@
     }
 
     function updateItem(id, item) {
-      if (idxById[id] === undefined || id !== item[idProperty]) {
-        throw new Error("Invalid or non-matching id");
+      if ( id !== item[idProperty]) {
+        logErr("IDs don't match in updateItem.\nID: " + id + "\nItem: " + item.id);
+        return;
+      } else if (idxById[id] === undefined) {
+        addItem(item);
+        return;
       }
       items[idxById[id]] = item;
       if (!updated) {
