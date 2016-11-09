@@ -1045,27 +1045,41 @@ if (typeof Slick === "undefined") {
       absoluteColumnMinWidth = Math.max(headerColumnWidthDiff, cellWidthDiff);
     }
 
+    // The problem here wasn't the idea of using a stylesheet object. The problem was specifically relying on the document.styleSheets collection
+    // We avoid that, we avoid all the problems. Isn't that swell?
+    // Credit here to https://github.com/mleibman/SlickGrid/issues/223#issuecomment-34407932
     function createCssRules() {
       $style = $("<style type='text/css' rel='stylesheet' />").appendTo($("head"));
       var rowHeight = (options.rowHeight - cellHeightDiff);
-      var rules = [
-        "." + uid + " .slick-header-column { left: 1000px; }",
-        "." + uid + " .slick-top-panel { height:" + options.topPanelHeight + "px; }",
-        "." + uid + " .slick-headerrow-columns { height:" + options.headerRowHeight + "px; }",
-        "." + uid + " .slick-footerrow-columns { height:" + options.footerRowHeight + "px; }",
-        "." + uid + " .slick-cell { height:" + rowHeight + "px; }",
-        "." + uid + " .slick-row { height:" + options.rowHeight + "px; }"
-      ];
+      if ($style[0].styleSheet) { // IE
+        $style[0].styleSheet.cssText = "";
+      } else {
+        $style[0].appendChild(document.createTextNode(""));
+      }
+      var sheet =  $style[0].sheet || $style[0].styleSheet;
+      var index = 0;
+      addCSSRule(sheet,"." + uid + " .slick-header-column", "left: 1000px;",index++);
+      addCSSRule(sheet,"." + uid + " .slick-top-panel", "height:" + options.topPanelHeight + "px;",index++);
+      addCSSRule(sheet,"." + uid + " .slick-headerrow-columns", "height:" + options.headerRowHeight + "px;",index++);
+      addCSSRule(sheet,"." + uid + " .slick-cell", "height:" + rowHeight + "px;",index++);
+      addCSSRule(sheet,"." + uid + " .slick-row", "height:" + options.rowHeight + "px;",index++);
+
 
       for (var i = 0; i < columns.length; i++) {
-        rules.push("." + uid + " .l" + i + " { }");
-        rules.push("." + uid + " .r" + i + " { }");
-      }
 
-      if ($style[0].styleSheet) { // IE
-        $style[0].styleSheet.cssText = rules.join(" ");
-      } else {
-        $style[0].appendChild(document.createTextNode(rules.join(" ")));
+        // In IE 8 only, it is not allowed to pass an empty string for the CSS rules. You have to pass something.
+        // This property would be set by slick.default-theme.css anyway, so we just put it here, it's pretty harmless
+        addCSSRule(sheet,"." + uid + " .l" + i , "z-index: auto",index++);
+        addCSSRule(sheet,"." + uid + " .r" + i, "z-index: auto",index++);
+      }
+    }
+
+    function addCSSRule(sheet, selector, rules, index) {
+      if(sheet.insertRule) {
+        sheet.insertRule(selector + "{" + rules + "}", index);
+      }
+      else {
+        sheet.addRule(selector, rules, index);
       }
     }
 
@@ -1081,7 +1095,7 @@ if (typeof Slick === "undefined") {
         }
 
         if (!stylesheet) {
-          throw new Error("Cannot find stylesheet.");
+          return null;
         }
 
         // find and cache column CSS rules
