@@ -654,8 +654,14 @@ if (typeof Slick === "undefined") {
       for (var i = 0; i < columns.length; i++) {
         var m = columns[i];
 
+        var columnNameClasses = 'slick-column-name';
+
+        if(m.sortable) {
+          columnNameClasses += ' slick-sortable-column-name';
+        }
+
         var header = $("<div class='ui-state-default slick-header-column' role='columnheader' />")
-            .html("<span class='slick-column-name'>" + m.name + "</span>")
+            .html("<span class='" + columnNameClasses + "'>" + m.name + "</span>")
             .width(m.width - headerColumnWidthDiff)
             .attr("id", "" + uid + m.id)
             .attr("title", m.toolTip || "")
@@ -714,6 +720,13 @@ if (typeof Slick === "undefined") {
       $headers.click(function (e) {
         // temporary workaround for a bug in jQuery 1.7.1 (http://bugs.jquery.com/ticket/11328)
         e.metaKey = e.metaKey || e.ctrlKey;
+
+        // VEOCI UPDATE -- only sort if you click the column name or sort
+        // arrow. Fixes #12840.
+        if (!$(e.target).hasClass("slick-sortable-column-name")
+            && !$(e.target).hasClass("slick-sort-indicator")) {
+          return;
+        }
 
         if ($(e.target).hasClass("slick-resizable-handle")) {
           return;
