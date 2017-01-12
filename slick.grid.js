@@ -1369,6 +1369,11 @@ if (typeof Slick === "undefined") {
       updateColumnCaches();
 
       if (initialized) {
+
+        /* This is needed because in some browsers, redrawing the headers loses the scroll position.
+           This is the only way I could find to force handleScroll to reposition it. */
+        prevScrollLeft = 0;
+
         invalidateAllRows();
         createColumnHeaders();
         removeCssRules();
