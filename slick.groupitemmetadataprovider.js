@@ -98,7 +98,7 @@
 
     // TODO:  add -/+ handling
     function handleGridKeyDown(e, args) {
-      if (options.enableExpandCollapse && (e.which == $.ui.keyCode.SPACE)) {
+      if (options.enableExpandCollapse && (e.which == $.ui.keyCode.SPACE && !$(e.target).is(':input'))) {
         var activeCell = this.getActiveCell();
         if (activeCell) {
           var item = this.getDataItem(activeCell.row);
