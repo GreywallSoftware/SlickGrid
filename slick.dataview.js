@@ -803,6 +803,7 @@
 
           if ((groupingInfos.length && (eitherIsNonData = (item.__nonDataRow) || (r.__nonDataRow)) &&
               item.__group !== r.__group ||
+              item.__updated ||
               item.__group && !item.equals(r))
               || (eitherIsNonData &&
               // no good way to compare totals since they are arbitrary DTOs
