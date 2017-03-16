@@ -722,9 +722,9 @@ if (typeof Slick === "undefined") {
         e.metaKey = e.metaKey || e.ctrlKey;
 
         // VEOCI UPDATE -- only sort if you click the column name or sort
-        // arrow. Fixes #12840.
-        if (!$(e.target).hasClass("slick-sortable-column-name")
-            && !$(e.target).hasClass("slick-sort-indicator")) {
+        // arrow. Fixes #12840
+        var $header = $(e.target).closest(".click-sortable-column-name,.slick-sort-indicator");
+        if (!$header.length){
           return;
         }
 
