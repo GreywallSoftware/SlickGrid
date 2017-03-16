@@ -723,7 +723,7 @@ if (typeof Slick === "undefined") {
 
         // VEOCI UPDATE -- only sort if you click the column name or sort
         // arrow. Fixes #12840
-        var $header = $(e.target).closest(".click-sortable-column-name,.slick-sort-indicator");
+        var $header = $(e.target).closest(".slick-sortable-column-name,.slick-sort-indicator");
         if (!$header.length){
           return;
         }
