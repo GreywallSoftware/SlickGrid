@@ -1072,6 +1072,10 @@ if (typeof Slick === "undefined") {
         addCSSRule(sheet,"." + uid + " .l" + i , "z-index: auto",index++);
         addCSSRule(sheet,"." + uid + " .r" + i, "z-index: auto",index++);
       }
+
+      if (!stylesheet) {
+        stylesheet = sheet;
+      }
     }
 
     function addCSSRule(sheet, selector, rules, index) {
@@ -1085,13 +1089,16 @@ if (typeof Slick === "undefined") {
 
     function getColumnCssRules(idx) {
       var i;
-      if (!stylesheet) {
-        var sheets = document.styleSheets;
-        for (i = 0; i < sheets.length; i++) {
-          if ((sheets[i].ownerNode || sheets[i].owningElement) == $style[0]) {
-            stylesheet = sheets[i];
-            break;
-          }
+      if (!columnCssRulesL) {
+
+        if (!stylesheet) {
+            var sheets = document.styleSheets;
+            for (i = 0; i < sheets.length; i++) {
+                if ((sheets[i].ownerNode || sheets[i].owningElement) == $style[0]) {
+                    stylesheet = sheets[i];
+                    break;
+                }
+            }
         }
 
         if (!stylesheet) {
