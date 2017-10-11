@@ -1048,6 +1048,7 @@ if (typeof Slick === "undefined") {
     // The problem here wasn't the idea of using a stylesheet object. The problem was specifically relying on the document.styleSheets collection
     // We avoid that, we avoid all the problems. Isn't that swell?
     // Credit here to https://github.com/mleibman/SlickGrid/issues/223#issuecomment-34407932
+    var generatedSheet;
     function createCssRules() {
       $style = $("<style type='text/css' rel='stylesheet' />").appendTo($("head"));
       var rowHeight = (options.rowHeight - cellHeightDiff);
@@ -1072,10 +1073,7 @@ if (typeof Slick === "undefined") {
         addCSSRule(sheet,"." + uid + " .l" + i , "z-index: auto",index++);
         addCSSRule(sheet,"." + uid + " .r" + i, "z-index: auto",index++);
       }
-
-      if (!stylesheet) {
-        stylesheet = sheet;
-      }
+      generatedSheet = sheet;
     }
 
     function addCSSRule(sheet, selector, rules, index) {
@@ -1089,18 +1087,18 @@ if (typeof Slick === "undefined") {
 
     function getColumnCssRules(idx) {
       var i;
-      if (!columnCssRulesL) {
-
-        if (!stylesheet) {
-            var sheets = document.styleSheets;
-            for (i = 0; i < sheets.length; i++) {
-                if ((sheets[i].ownerNode || sheets[i].owningElement) == $style[0]) {
-                    stylesheet = sheets[i];
-                    break;
-                }
-            }
+      if (!stylesheet) {
+        var sheets = document.styleSheets;
+        for (i = 0; i < sheets.length; i++) {
+          if ((sheets[i].ownerNode || sheets[i].owningElement) == $style[0]) {
+            stylesheet = sheets[i];
+            break;
+          }
         }
 
+        if (!stylesheet && generatedSheet) {
+          stylesheet = generatedSheet;
+        }
         if (!stylesheet) {
           return null;
         }
